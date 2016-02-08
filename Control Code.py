@@ -41,7 +41,7 @@ if pigpio.start(''): # must run notification test on localhost
 
     while (raw != 'stop'):   #message 'stop' terminates the program
         raw = ser.readline()
-        if (raw != ''):
+        if (raw != ''):	#ignore empty messages
             print(raw + '\n')
 	    if (raw == 's'):  #stop both motors
 		pigpio.set_servo_pulsewidth(motor1.pin, 0)
@@ -50,8 +50,7 @@ if pigpio.start(''): # must run notification test on localhost
 	    if (raw == 'f'):  #'f' for forwards
                     
                 #if previous direction was backwards
-		#change to forward. 1500 ms is the neutral
-		#pulse width.
+		#need to change to forward. 1500 ms is the neutral pulse width
 		if (dir == 0):	
 			motor1.speed = 2*1500 - motor1.speed
 			motor2.speed = 2*1500 - motor2.speed
@@ -60,6 +59,7 @@ if pigpio.start(''): # must run notification test on localhost
 		#set PWM signals to assigned speeds
 		pigpio.set_servo_pulsewidth(motor1.pin, motor1.speed)
 	        pigpio.set_servo_pulsewidth(motor2.pin, motor2.speed)
+	        #report the speed to the smartphone
 		ser.write('motor1 PWM = ' + str(motor1.speed))
 		ser.write('motor2 PWM = ' + str(motor2.speed))
 		
@@ -71,8 +71,10 @@ if pigpio.start(''): # must run notification test on localhost
 			motor1.speed = 2*1500 - motor1.speed
 			motor2.speed = 2*1500 - motor2.speed
 			dir = 0
+		#set PWM signals to assigned speeds
 		pigpio.set_servo_pulsewidth(motor1.pin, motor1.speed)
 	        pigpio.set_servo_pulsewidth(motor2.pin, motor2.speed)
+	        #report the speed to the smartphone
 		ser.write('motor1 PWM = ' + str(motor1.speed))
 		ser.write('motor2 PWM = ' + str(motor2.speed))
 		
